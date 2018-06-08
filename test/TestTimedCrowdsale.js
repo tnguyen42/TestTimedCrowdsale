@@ -7,9 +7,9 @@ import EVMRevert from './helpers/EVMRevert';
 const BigNumber = web3.BigNumber;
 
 require('chai')
-    .use(require('chai-as-promised'))
-    .use(require('chai-bignumber')(BigNumber))
-    .should();
+	.use(require('chai-as-promised'))
+	.use(require('chai-bignumber')(BigNumber))
+	.should();
 
 const TimedCrowdsale = artifacts.require('TimedCrowdsaleImpl');
 const SimpleToken = artifacts.require('SimpleToken');
@@ -22,7 +22,7 @@ contract('TimedCrowdsale', function ([_, investor, wallet, purchaser]) {
 	before(async function () {
 		// Advance to the next block to correctly read time in the solidity "now" function interpreted by testrpc
 		await advanceBlock();
-	    });
+	});
 
 	beforeEach(async function () {
 		console.log("Debug 00");
@@ -34,7 +34,7 @@ contract('TimedCrowdsale', function ([_, investor, wallet, purchaser]) {
 		console.log("Last working debug");
 		await this.token.transfer(this.crowdsale.address, tokenSupply);
 		console.log("Debug 01");
-	    });
+	});
 
 	it('should be ended only after end', async function () {
 		console.log("Debug 02");
@@ -44,25 +44,25 @@ contract('TimedCrowdsale', function ([_, investor, wallet, purchaser]) {
 		console.log("Debug 03");
 		ended = await this.crowdsale.hasClosed();
 		ended.should.equal(true);
-	   });
+	});
 
 	describe('accepting payments', function () {
 		console.log('Debug 04');
 		it('should reject payments before start', async function () {
 			await this.crowdsale.send(value).should.be.rejectedWith(EVMRevert);
 			await this.crowdsale.buyTokens(investor, { from: purchaser, value: value }).should.be.rejectedWith(EVMRevert);
-		    });
+		});
 
 		it('should accept payments after start', async function () {
 			await increaseTimeTo(this.openingTime);
 			await this.crowdsale.send(value).should.be.fulfilled;
 			await this.crowdsale.buyTokens(investor, { value: value, from: purchaser }).should.be.fulfilled;
-		    });
+		});
 
 		it('should reject payments after end', async function () {
 			await increaseTimeTo(this.afterClosingTime);
 			await this.crowdsale.send(value).should.be.rejectedWith(EVMRevert);
 			await this.crowdsale.buyTokens(investor, { value: value, from: purchaser }).should.be.rejectedWith(EVMRevert);
-		    });
-	    });
-    });
+		});
+	});
+});
