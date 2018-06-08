@@ -6,11 +6,11 @@ import 'zeppelin-solidity/contracts/token/ERC20/StandardToken.sol';
 contract TimedCrowdsaleImpl is TimedCrowdsale {
 	
 	constructor(
+			uint256 _openingTime,
+			uint256 _closingTime,
 			uint256 _rate,
 			address _wallet,
-			StandardToken _token,
-			uint256 _openingTime,
-			uint256 _closingTime
+			StandardToken _token
 		)
 		public
 		TimedCrowdsale(_openingTime, _closingTime)
