@@ -25,23 +25,29 @@ contract('TimedCrowdsale', function ([_, investor, wallet, purchaser]) {
 	    });
 
 	beforeEach(async function () {
+		console.log("Debug 00");
 		this.openingTime = latestTime() + duration.weeks(1);
 		this.closingTime = this.openingTime + duration.weeks(1);
 		this.afterClosingTime = this.closingTime + duration.seconds(1);
 		this.token = await SimpleToken.new();
 		this.crowdsale = await TimedCrowdsale.new(this.openingTime, this.closingTime, rate, wallet, this.token.address);
+		console.log("Last working debug");
 		await this.token.transfer(this.crowdsale.address, tokenSupply);
+		console.log("Debug 01");
 	    });
 
 	it('should be ended only after end', async function () {
+		console.log("Debug 02");
 		let ended = await this.crowdsale.hasClosed();
 		ended.should.equal(false);
 		await increaseTimeTo(this.afterClosingTime);
+		console.log("Debug 03");
 		ended = await this.crowdsale.hasClosed();
 		ended.should.equal(true);
 	   });
 
 	describe('accepting payments', function () {
+		console.log('Debug 04');
 		it('should reject payments before start', async function () {
 			await this.crowdsale.send(value).should.be.rejectedWith(EVMRevert);
 			await this.crowdsale.buyTokens(investor, { from: purchaser, value: value }).should.be.rejectedWith(EVMRevert);
